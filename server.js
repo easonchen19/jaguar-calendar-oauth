@@ -16,13 +16,25 @@ if (!CLIENT_ID || !CLIENT_SECRET) {
   process.exit(1);
 }
 
-// Step 1: Start OAuth flow
+// Step 1: Start OAuth flow for Calendar
 app.get('/auth', (req, res) => {
   const authUrl = `https://accounts.google.com/o/oauth2/auth?` +
     `client_id=${CLIENT_ID}&` +
     `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
     `response_type=code&` +
     `scope=${encodeURIComponent('https://www.googleapis.com/auth/calendar.readonly')}&` +
+    `prompt=consent`;
+  
+  res.redirect(authUrl);
+});
+
+// Step 1b: Start OAuth flow for Gmail
+app.get('/auth-gmail', (req, res) => {
+  const authUrl = `https://accounts.google.com/o/oauth2/auth?` +
+    `client_id=${CLIENT_ID}&` +
+    `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
+    `response_type=code&` +
+    `scope=${encodeURIComponent('https://www.googleapis.com/auth/gmail.send')}&` +
     `prompt=consent`;
   
   res.redirect(authUrl);
@@ -90,8 +102,9 @@ app.get('/health', (req, res) => {
 // Root
 app.get('/', (req, res) => {
   res.send(`
-    <h1>Jaguar AI - Google Calendar OAuth</h1>
-    <p><a href="/auth">Click here to authorize Google Calendar access</a></p>
+    <h1>Jaguar AI - Google OAuth</h1>
+    <p><a href="/auth">📅 Authorize Google Calendar access</a></p>
+    <p><a href="/auth-gmail">📧 Authorize Gmail access</a></p>
   `);
 });
 
